@@ -1,3 +1,4 @@
 streamlit
 vaderSentiment
 matplotlib
+pandas
