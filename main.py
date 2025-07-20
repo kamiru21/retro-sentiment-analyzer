@@ -1,21 +1,32 @@
 import streamlit as st
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
+import pandas as pd
 
 st.title("Agile Retro Sentiment Analyzer")
 
-st.write("Enter one comment per line:")
+st.write("Upload a CSV file or enter comments manually.")
+st.markdown("**CSV format:** 1 column named `comment`")
 
-input_text = st.text_area("Team comments (one per line):")
+uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
+text_input = st.text_area("Or paste team comments (one per line):")
 
-if input_text:
-    comments = input_text.strip().split("\n")
+comments = []
 
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    if 'comment' in df.columns:
+        comments = df['comment'].dropna().tolist()
+    else:
+        st.error("CSV must contain a 'comment' column.")
+elif text_input:
+    comments = text_input.strip().split("\n")
+
+if comments:
     analyzer = SentimentIntensityAnalyzer()
     sentiment_counts = {"POSITIVE": 0, "NEUTRAL": 0, "NEGATIVE": 0}
 
     st.subheader("Sentiment Results")
-
     for comment in comments:
         score = analyzer.polarity_scores(comment)["compound"]
         sentiment = (
@@ -24,13 +35,13 @@ if input_text:
             else "NEUTRAL"
         )
         sentiment_counts[sentiment] += 1
-        st.write(f"**{sentiment}** — {comment} (score: {score:.2f})")
+        st.markdown(f"🗨️ **{sentiment}** — {comment} `({score:.2f})`")
 
-    # Plot bar chart
-    st.subheader("Summary Chart")
+    st.subheader("Sentiment Chart")
     fig, ax = plt.subplots()
     ax.bar(sentiment_counts.keys(), sentiment_counts.values(), color=["green", "gray", "red"])
     ax.set_ylabel("Number of Comments")
     ax.set_title("Sentiment Breakdown")
     st.pyplot(fig)
+
 
