@@ -41,6 +41,7 @@ Helps Product Managers/Scrum Masters/Agile Coaches spot team mood patterns from 
 ## 💭 Feedback and Contributin
 
 - Feel free to reach out to me on any feedback or improvement to the product
+- If the app is asleep, do forgive me, and ping me to make it back up
 
 ## 🧊 Disclaimer
 
